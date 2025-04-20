@@ -1,37 +1,55 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from sqlalchemy import create_engine, text
-from sqlalchemy import create_engine
+from fastapi import FastAPI, HTTPException   
+from pydantic import BaseModel             
+from dbConnection import connect_to_mysql, execute_query, disconnect_from_mysql  
+from dotenv import load_dotenv
+import os
+import logging
 
-app = FastAPI()
+# Configura logging (esto es mejor que usar print cuando estás en producción o debug más fino)
+logging.basicConfig(level=logging.INFO)
 
-# entrada de datos
-class UserLogin(BaseModel):
-    nombre = str
-    clave =  str
+# Cargar variables del entorno
+load_dotenv(dotenv_path='.venv/.env')
 
+app = FastAPI() 
+
+class UserLogin(BaseModel):  
+    Correo: str
+    password: str
 
 def transformarClave(clave: str) -> str:
-    # aqui pasamos el parametro clave entregado por el front a mayuscula sostenida y binario
-    clave_c = clave.upper()
-    clave_bin = ''.join(format(ord(c), '08b') for c in clave_c)
-    return clave_bin
+    clave_c = clave.upper()  
+    clave_bin = ''.join(format(ord(c), '08b') for c in clave_c)  
+    logging.info(f"Clave original: {clave} | Clave transformada: {clave_bin}")
+    return clave_bin  
 
-#ruta de login
 @app.post("/login")
-def login(user: UserLogin):
-    claveTransformada = transformarClave(user.clave)
+def login(user: UserLogin): 
+    logging.info(f" Petición recibida con correo: {user.Correo}")
 
-    with engine.connect() as conn:
-        query = text("SELECT * FROM usuario WHERE nombre = :nombre AND clave = :clave")
-        result = conn.execute(query, {"nombre": user.nombre, "clave": claveTransformada}).fetchone()
+    claveTransformada = transformarClave(user.password)
 
-        return {"ok": result is not None}
+    db_connection = connect_to_mysql(
+        os.getenv('DB_HOST', 'localhost'),
+        os.getenv('DB_USER'),
+        os.getenv('DB_PASSWORD'),
+        os.getenv('DB_DATABASE')
+    )
+    
+    if not db_connection:
+        logging.error(" Fallo la conexión a la base de datos.")
+        raise HTTPException(status_code=500, detail="No se pudo conectar a la base de datos")  
+    
+    query = "SELECT * FROM usuario WHERE Correo = %s AND clave = %s"
+    logging.info(f"📄 Ejecutando consulta: {query} con valores: ({user.Correo}, {claveTransformada})")
 
+    result = execute_query(db_connection, query, (user.Correo, claveTransformada))
+    
+    disconnect_from_mysql(db_connection)
 
+    if result:
+        logging.info(" Usuario autenticado correctamente.")
+    else:
+        logging.warning(" Usuario o contraseña incorrectos.")
 
-# Configuración de la base de datos
-DATABASE_URL = ""
-engine = create_engine(DATABASE_URL, echo=True)
-
-
+    return {"ok": result is not None}
