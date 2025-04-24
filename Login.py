@@ -54,7 +54,7 @@ def login(user: UserLogin):
         logging.error(" Fallo la conexión a la base de datos.")
         raise HTTPException(status_code=500, detail="No se pudo conectar a la base de datos")
     
-    query = "SELECT * FROM usuario WHERE Correo = %s AND clave = %s"
+    query = "SELECT * FROM usuario WHERE Correo = %s AND password = %s"
     logging.info(f"📄 Ejecutando consulta: {query} con valores: ({user.Correo}, {claveTransformada})")
 
     result = execute_query(db_connection, query, (user.Correo, claveTransformada))
@@ -66,4 +66,4 @@ def login(user: UserLogin):
     else:
         logging.warning(" Usuario o contraseña incorrectos.")
 
-    return {"ok": result is not None}
+    return {"ok": bool(result) and len(result) > 0}

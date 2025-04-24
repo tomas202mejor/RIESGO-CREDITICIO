@@ -1,119 +1,115 @@
-from dotenv import load_dotenv
-import os
-from fastapi import FastAPI, HTTPException, Form, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
+from dbConnection import connect_to_mysql, execute_query, disconnect_from_mysql
+from fastapi.middleware.cors import CORSMiddleware
+import logging
+import os
+
+# Cargar variables de entorno
 load_dotenv(dotenv_path='.venv/.env')
 
-app = FastAPI()
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
 
-# Configuración de base de datos MySQL
-DATABASE_URL = "mysql+pymysql://root:1221@localhost:3306/base_usuarios2"
-engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-# Modelo SQLAlchemy
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(50), unique=True, index=True)
-    apellido = Column(String(50), unique=True, index=True)
-    Nusuario = Column(String(50), unique=True, index=True)
-    Ndocumento = Column(String(50), unique=True, index=True)
-    email = Column(String(100), unique=True, index=True) 
-    telefono = Column(String(50), unique=True, index=True)   
-    password = Column(String(255)) 
-
-# Crear las tablas
-Base.metadata.create_all(bind=engine)
-
-# Esquemas Pydantic
-class UserCreate(BaseModel):
-    nombre: str
-    apellido: str
-    Nusuario: str
-    Ndocumento: str
-    email: str
-    telefono: str
-    password: str
-
-class UserOut(BaseModel):
-    id: int
-    nombre: str
-    apellido: str
-    Nusuario: str
-    Ndocumento: str
-    email: str
-    telefono: str
-    password: str
-
-    class Config:
-        from_attributes = True
-            
-# Función para transformar la clave
-def transformarClave(clave: str) -> str:
-    # Pasar la clave a mayúsculas y luego convertirla a binario
-    clave_c = clave.upper()
-    clave_bin = ''.join(format(ord(c), '08b') for c in clave_c)
-    return clave_bin
-
-# Crear la app
 app = FastAPI(title="Microservicio de Registro de Usuario")
 
-# Usamos Jinja2Templates para renderizar archivos HTML
-templates = Jinja2Templates(directory="templates")
+# Configurar CORS
+origins = [
+    "http://localhost:3000",
+]
 
-# Ruta para mostrar el formulario HTML
-@app.get("/", response_class=HTMLResponse)
-async def mostrar_formulario(request: Request):
-    return templates.TemplateResponse("formulario.html", {"request": request})
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Ruta para registrar usuario
-@app.post("/registro", response_model=UserOut)
-def registrar_usuario(user: UserCreate):
-    db = SessionLocal()
-    if db.query(User).filter(User.nombre == user.nombre).first():
-        db.close()
-        raise HTTPException(status_code=400, detail="El nombre ya está registrado")
-    if db.query(User).filter(User.apellido == user.apellido).first():
-        db.close()
-        raise HTTPException(status_code=400, detail="El apellido ya está registrado")
-    if db.query(User).filter(User.Nusuario == user.Nusuario).first():
-        db.close()
-        raise HTTPException(status_code=400, detail="El usuario ya está registrado")
-    if db.query(User).filter(User.Ndocumento == user.Ndocumento).first():
-        db.close()
-        raise HTTPException(status_code=400, detail="El documento ya está registrado")
-    if db.query(User).filter(User.email == user.email).first():
-        db.close()
-        raise HTTPException(status_code=400, detail="El correo ya está registrado")
-    if db.query(User).filter(User.telefono == user.telefono).first():
-        db.close()
-        raise HTTPException(status_code=400, detail="El telefono ya está registrado")
-    
+class UserRegister(BaseModel):
+    nombre: str
+    apellido: str
+    Nusuario: str
+    Ndocumento: str
+    email: str
+    telefono: str
+    password: str
 
-    # Transformar la clave
+def transformarClave(clave: str) -> str:
+    clave_c = clave.upper()
+    clave_bin = ''.join(format(ord(c), '08b') for c in clave_c)
+    logging.info(f"Clave transformada: {clave_bin}")
+    return clave_bin
+
+@app.post("/registro")
+def registrar_usuario(user: UserRegister):
+    db_connection = connect_to_mysql(
+        os.getenv('DB_HOST', 'localhost'),
+        os.getenv('DB_USER'),
+        os.getenv('DB_PASSWORD'),
+        os.getenv('DB_DATABASE')
+    )
+
+    if not db_connection:
+        logging.error("❌ No se pudo conectar a la base de datos")
+        raise HTTPException(status_code=500, detail="Error en la conexión a la base de datos")
+
+    # Validar que los datos no estén duplicados utilizando execute_query
+    try:
+        # Revisar si ya existe el Nusuario
+        query = "SELECT 1 FROM usuario WHERE Nusuario = %s"
+        result = execute_query(db_connection, query, (user.Nusuario,))
+        if result and len(result) > 0:
+            return {"ok": False, "mensaje": "El usuario ya está registrado"}
+
+        # Revisar si ya existe el Ndocumento
+        query = "SELECT 1 FROM usuario WHERE Ndocumento = %s"
+        result = execute_query(db_connection, query, (user.Ndocumento,))
+        if result and len(result) > 0:
+            return {"ok": False, "mensaje": "El documento ya está registrado"}
+
+        # Revisar si ya existe el email
+        query = "SELECT 1 FROM usuario WHERE correo = %s"
+        result = execute_query(db_connection, query, (user.email,))
+        if result and len(result) > 0:
+            return {"ok": False, "mensaje": "El correo ya está registrado"}
+
+        # Revisar si ya existe el teléfono
+        query = "SELECT 1 FROM usuario WHERE telefono = %s"
+        result = execute_query(db_connection, query, (user.telefono,))
+        if result and len(result) > 0:
+            return {"ok": False, "mensaje": "El teléfono ya está registrado"}
+        
+    except Exception as e:
+        logging.error(f"❌ Error al validar los datos: {e}")
+        return {"ok": False, "mensaje": "Error al validar los datos"}
+
+    # Si pasa las validaciones, se inserta en la base de datos
     clave_transformada = transformarClave(user.password)
 
-    nuevo_usuario = User(
-        nombre=user.nombre, 
-        apellido=user.apellido,
-        Nusuario=user.Nusuario,
-        Ndocumento=user.Ndocumento,
-        email=user.email,
-        telefono=user.telefono,
-        password=clave_transformada
+    insert_query = """
+        INSERT INTO usuario (nombres, apellidos, Nusuario, Ndocumento, correo, telefono, password)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+    params = (
+        user.nombre,
+        user.apellido,
+        user.Nusuario,
+        user.Ndocumento,
+        user.email,
+        user.telefono,
+        clave_transformada
     )
-    db.add(nuevo_usuario)
-    db.commit()
-    db.refresh(nuevo_usuario)
-    db.close()
-    return nuevo_usuario
+    try:
+        result = execute_query(db_connection, insert_query, params)
+        if not result:
+            raise Exception("No se insertó ningún registro")
 
-
+        logging.info("✅ Usuario insertado correctamente.")
+        return {"ok": True, "mensaje": "Usuario registrado con éxito"}
+    except Exception as e:
+        logging.error(f"❌ Error al registrar usuario: {e}")
+        return {"ok": False, "mensaje": "Error al registrar usuario"}
+    finally:
+        disconnect_from_mysql(db_connection)
