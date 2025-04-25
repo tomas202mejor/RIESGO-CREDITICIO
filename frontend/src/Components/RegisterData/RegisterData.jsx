@@ -18,7 +18,7 @@ const RegisterData = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:8003/guardarDatosFinac', {
+      const res = await fetch('http://localhost:8000/guardarDatosFinac', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
