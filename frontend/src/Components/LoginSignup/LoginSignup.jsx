@@ -28,19 +28,20 @@ const LoginSignup = () => {
       const res = await fetch('http://localhost:8000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ Correo: user, password: password })
+        body: JSON.stringify({ Correo: user, password })
       });
 
       const data = await res.json();
 
       if (res.ok) {
+        localStorage.setItem('token', data.access_token); // Guardar token
         setMessage('✅ Inicio de sesión correcto');
-        navigate('/Menu');
+        navigate('/Menu'); // Ir al menú principal
       } else {
         setMessage('❌ Usuario o contraseña incorrectos');
       }
     } catch (error) {
-      console.error('Error al conectarse con el backend:', error);
+      console.error('Error de conexión:', error);
       setMessage('⚠️ Error de conexión con el servidor');
     }
   };
@@ -51,7 +52,6 @@ const LoginSignup = () => {
       return;
     }
 
-    // Validación de correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
       setMessage('⚠️ Por favor ingresa un correo electrónico válido.');
@@ -69,23 +69,15 @@ const LoginSignup = () => {
           Ndocumento: ndocumento,
           email: correo,
           telefono,
-          password: regPassword // El backend se encarga de transformar la contraseña
+          password: regPassword
         })
       });
 
-      // Verificar si la respuesta es exitosa
-      if (!res.ok) {
-        const errorData = await res.json();
-        setMessage(`❌ ${errorData.detail || "Error desconocido"}`);
-        return;
-      }
-
       const data = await res.json();
 
-      // Verificar si los datos se recibieron correctamente
-      if (data && data.id) {
+      if (res.ok && data && data.id) {
         setMessage('✅ Registro exitoso');
-        setIsLogin(true); // Cambiar a la pantalla de login
+        setIsLogin(true);
       } else {
         setMessage('❌ Error desconocido');
       }
@@ -96,11 +88,7 @@ const LoginSignup = () => {
   };
 
   const handleSubmit = () => {
-    if (isLogin) {
-      handleLogin();
-    } else {
-      handleRegister();
-    }
+    isLogin ? handleLogin() : handleRegister();
   };
 
   const handleModeSwitch = () => {
@@ -127,93 +115,28 @@ const LoginSignup = () => {
       <div className="inputs">
         {!isLogin && (
           <>
-            <div className="input">
-              <input
-                type="text"
-                placeholder="Nombre de usuario"
-                value={nusuario}
-                onChange={(e) => setNusuario(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <input
-                type="text"
-                placeholder="Nombres"
-                value={nombres}
-                onChange={(e) => setNombres(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <input
-                type="text"
-                placeholder="Apellidos"
-                value={apellidos}
-                onChange={(e) => setApellidos(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <input
-                type="text"
-                placeholder="Número de documento"
-                value={ndocumento}
-                onChange={(e) => setNdocumento(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <input
-                type="email"
-                placeholder="Correo electrónico"
-                value={correo}
-                onChange={(e) => setCorreo(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <input
-                type="tel"
-                placeholder="Teléfono"
-                value={telefono}
-                onChange={(e) => setTelefono(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <input
-                type="password"
-                placeholder="Contraseña"
-                value={regPassword}
-                onChange={(e) => setRegPassword(e.target.value)}
-              />
-            </div>
+            <div className="input"><input type="text" placeholder="Usuario" value={nusuario} onChange={(e) => setNusuario(e.target.value)} /></div>
+            <div className="input"><input type="text" placeholder="Nombres" value={nombres} onChange={(e) => setNombres(e.target.value)} /></div>
+            <div className="input"><input type="text" placeholder="Apellidos" value={apellidos} onChange={(e) => setApellidos(e.target.value)} /></div>
+            <div className="input"><input type="text" placeholder="Documento" value={ndocumento} onChange={(e) => setNdocumento(e.target.value)} /></div>
+            <div className="input"><input type="email" placeholder="Correo" value={correo} onChange={(e) => setCorreo(e.target.value)} /></div>
+            <div className="input"><input type="tel" placeholder="Teléfono" value={telefono} onChange={(e) => setTelefono(e.target.value)} /></div>
+            <div className="input"><input type="password" placeholder="Contraseña" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} /></div>
           </>
         )}
 
         {isLogin && (
           <>
-            <div className="input">
-              <input
-                type="email"
-                placeholder="Correo electrónico"
-                value={user}
-                onChange={(e) => setUser(e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <div className="input"><input type="email" placeholder="Correo" value={user} onChange={(e) => setUser(e.target.value)} /></div>
+            <div className="input"><input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
           </>
         )}
       </div>
 
       <div className="submit-container">
-        <div className="submit" onClick={handleSubmit}>
-          {isLogin ? 'Ingresar' : 'Registrar'}
-        </div>
+        <div className="submit" onClick={handleSubmit}>{isLogin ? 'Ingresar' : 'Registrar'}</div>
         <div className="toggle-mode" onClick={handleModeSwitch}>
-          {isLogin ? '¿No tienes una cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
+          {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
         </div>
       </div>
 

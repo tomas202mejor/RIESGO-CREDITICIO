@@ -1,41 +1,33 @@
-from dotenv import load_dotenv
-import os
-from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+import bcrypt
+import os
+from dotenv import load_dotenv
 
-# Cargar variables de entorno
-load_dotenv(dotenv_path='.venv/.env')
+load_dotenv(dotenv_path=".venv/.env")
 
-# 📌 IMPORTANTE: usamos router, no app
-router = APIRouter()
-
-# Configuración de base de datos MySQL
-DATABASE_URL = os.getenv('DATABASE_URL', "mysql+pymysql://root:123456789@localhost:3306/credito")
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:123456789@localhost:3306/credito")
 engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
-# Modelo SQLAlchemy
+router = APIRouter()
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(50), unique=True, index=True)
-    apellido = Column(String(50), unique=True, index=True)
+    nombre = Column(String(50))
+    apellido = Column(String(50))
     Nusuario = Column(String(50), unique=True, index=True)
     Ndocumento = Column(String(50), unique=True, index=True)
-    email = Column(String(100), unique=True, index=True) 
-    telefono = Column(String(50), unique=True, index=True)   
+    email = Column(String(100), unique=True, index=True)
+    telefono = Column(String(50), unique=True, index=True)
     password = Column(String(255))
 
-# Crear las tablas
 Base.metadata.create_all(bind=engine)
 
-# Esquemas Pydantic
 class UserCreate(BaseModel):
     nombre: str
     apellido: str
@@ -53,58 +45,32 @@ class UserOut(BaseModel):
     Ndocumento: str
     email: str
     telefono: str
-    password: str
-
     class Config:
         from_attributes = True
 
-# Función para transformar la clave
-def transformarClave(clave: str) -> str:
-    clave_c = clave.upper()
-    clave_bin = ''.join(format(ord(c), '08b') for c in clave_c)
-    return clave_bin
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-# Templates (formulario HTML)
-templates = Jinja2Templates(directory="templates")
-
-# Ruta para mostrar el formulario HTML
-@router.get("/", response_class=HTMLResponse)
-async def mostrar_formulario(request: Request):
-    return templates.TemplateResponse("formulario.html", {"request": request})
-
-# Ruta para registrar usuario
 @router.post("/registro", response_model=UserOut)
 def registrar_usuario(user: UserCreate):
     db = SessionLocal()
-
-    campos_unicos = {
-        'nombre': user.nombre,
-        'apellido': user.apellido,
-        'Nusuario': user.Nusuario,
-        'Ndocumento': user.Ndocumento,
-        'email': user.email,
-        'telefono': user.telefono
-    }
-
-    for campo, valor in campos_unicos.items():
-        if db.query(User).filter(getattr(User, campo) == valor).first():
+    for campo in ["Nusuario", "Ndocumento", "email", "telefono"]:
+        if db.query(User).filter(getattr(User, campo) == getattr(user, campo)).first():
             db.close()
             raise HTTPException(status_code=400, detail=f"El {campo} ya está registrado")
 
-    clave_transformada = transformarClave(user.password)
-
-    nuevo_usuario = User(
+    user_db = User(
         nombre=user.nombre,
         apellido=user.apellido,
         Nusuario=user.Nusuario,
         Ndocumento=user.Ndocumento,
         email=user.email,
         telefono=user.telefono,
-        password=clave_transformada
+        password=hash_password(user.password)
     )
-    db.add(nuevo_usuario)
+    db.add(user_db)
     db.commit()
-    db.refresh(nuevo_usuario)
+    db.refresh(user_db)
     db.close()
+    return user_db
 
-    return nuevo_usuario

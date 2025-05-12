@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from Login import router as login_router
 from registro import router as registro_router
 from registroDatosFin import router as finanzas_router  
+from DatosUsuario import router as usuario_router
+
 from dotenv import load_dotenv
 import os
 
@@ -29,12 +31,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluir los routers
+# Incluir routers
 app.include_router(login_router, prefix="/auth", tags=["Autenticación"])
 app.include_router(registro_router, prefix="/users", tags=["Registro de Usuarios"])
-app.include_router(finanzas_router, prefix="/finanzas")  # <-- enrutarlo aquí
+app.include_router(finanzas_router, prefix="/finanzas", tags=["Finanzas"])  # ✅ Asegúrate que estas rutas usen Depends si son privadas
+app.include_router(usuario_router, prefix="/usuario", tags=["Datos del Usuario"])
 
-# Ruta base
+# Ruta de inicio
 @app.get("/", tags=["Inicio"])
 def read_root():
     return {"message": "🚀 Bienvenido a la API de Autenticación, Registro y Datos Financieros"}

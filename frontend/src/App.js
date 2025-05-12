@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import RegisterData from './Components/RegisterData/RegisterData';
+import RegisterData from './Components/RegisterData/RegisterData.jsx';
 import Menu from './Components/Menu/Menu';
 import LoginSignup from './Components/LoginSignup/LoginSignup';
 

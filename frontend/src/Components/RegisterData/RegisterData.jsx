@@ -2,87 +2,85 @@ import React, { useState } from 'react';
 import './RegisterData.css';
 
 const RegisterData = () => {
-  const [documento, setDocumento] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [vrIngresos, setVrIngresos] = useState('');
-  const [vrGastos, setVrGastos] = useState('');
-  const [vrCredito, setVrCredito] = useState('');
-  const [numCuotas, setNumCuotas] = useState('');
-  const [nombre, setNombre] = useState(''); // Agregado para enviar "nombre"
+  const [form, setForm] = useState({
+    nombre: '',
+    documento: '',
+    correo: '',
+    vrIngresos: '',
+    vrGastos: '',
+    vrCredito: '',
+    numCuotas: ''
+  });
+
   const [mensaje, setMensaje] = useState('');
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async () => {
+    const { nombre, documento, correo, vrIngresos, vrGastos, vrCredito, numCuotas } = form;
+
     if (!nombre || !documento || !correo || !vrIngresos || !vrGastos || !vrCredito || !numCuotas) {
       setMensaje('⚠️ Por favor completa todos los campos.');
       return;
     }
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setMensaje('⚠️ No se encontró el token de autenticación.');
+      return;
+    }
+
     try {
+      const body = {
+        nombre,
+        documento,  // Enviar como cadena, sin convertir a número
+        correo,
+        vrIngresos: parseFloat(vrIngresos),
+        vrGastos: parseFloat(vrGastos),
+        vrCredito: parseFloat(vrCredito),
+        numCuotas: parseInt(numCuotas)
+      };
+
       const res = await fetch('http://localhost:8000/finanzas/guardarDatosFinac', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          nombre,
-          documento: parseInt(documento),
-          correo,
-          vrIngresos: parseFloat(vrIngresos),
-          vrGastos: parseFloat(vrGastos),
-          vrCredito: parseFloat(vrCredito),
-          numCuotas: parseInt(numCuotas)
-        })
+        body: JSON.stringify(body)
       });
 
       const data = await res.json();
-      if (data.idResp === "0") {
+
+      if (res.ok && data.idResp === "0") {
         setMensaje('✅ ' + data.msg);
       } else {
-        setMensaje('❌ Ocurrió un error: ' + (data.msg || data.error));
+        setMensaje('❌ Ocurrió un error: ' + (data.msg || data.detail || 'Error desconocido.'));
+        console.log(data);  // Aquí puedes ver más detalles del error
       }
+
     } catch (error) {
       console.error('Error al enviar los datos:', error);
-      setMensaje('⚠️ Error de conexión con el servidor');
+      setMensaje('⚠️ Error de conexión con el servidor o formato incorrecto');
     }
   };
 
   return (
-    <div className="container">
-      <div className="welcome-message">
-        <h3>Bienvenido, por favor ingrese los datos para realizar su gestión de riesgo</h3>
-      </div>
-
-      <div className="inputs">
-        <div className="input">
-          <input type="text" placeholder="Nombre completo" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-        </div>
-        <div className="input">
-          <input type="number" placeholder="Número de documento" value={documento} onChange={(e) => setDocumento(e.target.value)} />
-        </div>
-        <div className="input">
-          <input type="email" placeholder="Correo electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-        </div>
-        <div className="input">
-          <input type="number" placeholder="Valor de los ingresos" value={vrIngresos} onChange={(e) => setVrIngresos(e.target.value)} />
-        </div>
-        <div className="input">
-          <input type="number" placeholder="Valor de los gastos" value={vrGastos} onChange={(e) => setVrGastos(e.target.value)} />
-        </div>
-        <div className="input">
-          <input type="number" placeholder="Valor del crédito a solicitar" value={vrCredito} onChange={(e) => setVrCredito(e.target.value)} />
-        </div>
-        <div className="input">
-          <input type="number" placeholder="Número de cuotas" value={numCuotas} onChange={(e) => setNumCuotas(e.target.value)} />
-        </div>
-      </div>
-
-      <div className="button-register">
-        <button className="register" onClick={handleSubmit}>Registrar</button>
-      </div>
-
-      {mensaje && <div className="message">{mensaje}</div>}
+    <div className="form-container">
+      <h2>Registrar Datos Financieros</h2>
+      <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} />
+      <input name="documento" placeholder="Documento" type="number" value={form.documento} onChange={handleChange} />
+      <input name="correo" placeholder="Correo" type="email" value={form.correo} onChange={handleChange} />
+      <input name="vrIngresos" placeholder="Ingresos" type="number" step="0.01" value={form.vrIngresos} onChange={handleChange} />
+      <input name="vrGastos" placeholder="Gastos" type="number" step="0.01" value={form.vrGastos} onChange={handleChange} />
+      <input name="vrCredito" placeholder="Crédito Solicitado" type="number" step="0.01" value={form.vrCredito} onChange={handleChange} />
+      <input name="numCuotas" placeholder="Número de Cuotas" type="number" value={form.numCuotas} onChange={handleChange} />
+      <button onClick={handleSubmit}>Registrar</button>
+      {mensaje && <p className="mensaje">{mensaje}</p>}
     </div>
   );
 };
 
-export default RegisterData;
+export default RegisterData;  // Asegúrate de tener esta línea al final

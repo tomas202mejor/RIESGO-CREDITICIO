@@ -1,12 +1,39 @@
-from fastapi import APIRouter
+# registroDatosFin.py
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from dbConnection import connect_to_mysql, execute_non_query, disconnect_from_mysql
+from sqlalchemy import Column, Integer, Float, String, create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+from auth import obtener_usuario_desde_token
+import os
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=".venv/.env")
+
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:123456789@localhost:3306/credito")
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
 
 router = APIRouter()
 
+# Modelo de la tabla financiera
+class RegistroFinanciero(Base):
+    __tablename__ = "registro_financiero"
+    idRegistro  = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100))
+    documento = Column(String(50))
+    correo = Column(String(100))
+    vrIngresos = Column(Float)
+    vrGastos = Column(Float)
+    vrCredito = Column(Float)
+    cuotas = Column(Integer)
+
+Base.metadata.create_all(bind=engine)
+
+# Esquema de entrada
 class DatosFinac(BaseModel):
     nombre: str
-    documento: int
+    documento: str
     correo: str
     vrIngresos: float
     vrGastos: float
@@ -14,34 +41,26 @@ class DatosFinac(BaseModel):
     numCuotas: int
 
 @router.post("/guardarDatosFinac", tags=["Datos Financieros"])
-async def guardar_datos_finac(data: DatosFinac):
-    db_connection = connect_to_mysql()
+def guardar_datos_finac(data: DatosFinac, usuario=Depends(obtener_usuario_desde_token)):
+    db = SessionLocal()
 
-    if db_connection is None:
-        return {"idResp": "1", "msg": "❌ No se pudo conectar a la base de datos"}
-
-    query = """
-        INSERT INTO registro_financiero 
-        (nombre, documento, correo, vrIngresos, vrGastos, vrCredito, cuotas)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """
-    params = (
-        data.nombre,
-        data.documento,
-        data.correo,
-        data.vrIngresos,
-        data.vrGastos,
-        data.vrCredito,
-        data.numCuotas
+    nuevo = RegistroFinanciero(
+        nombre=data.nombre,
+        documento=data.documento,
+        correo=data.correo,
+        vrIngresos=data.vrIngresos,
+        vrGastos=data.vrGastos,
+        vrCredito=data.vrCredito,
+        cuotas=data.numCuotas
     )
 
     try:
-        success = execute_non_query(db_connection, query, params)
-        if success:
-            return {"idResp": "0", "msg": "✅ Datos guardados correctamente"}
-        else:
-            return {"idResp": "1", "msg": "❌ Error al guardar los datos"}
+        db.add(nuevo)
+        db.commit()
+        db.refresh(nuevo)
+        return {"idResp": "0", "msg": "✅ Datos financieros guardados correctamente"}
     except Exception as e:
-        return {"idResp": "1", "error": str(e)}
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"❌ Error al guardar: {str(e)}")
     finally:
-        disconnect_from_mysql(db_connection)
+        db.close()
