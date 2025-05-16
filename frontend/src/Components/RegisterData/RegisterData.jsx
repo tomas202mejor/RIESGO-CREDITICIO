@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './RegisterData.css';
+import { useNavigate } from "react-router-dom";
 
 const RegisterData = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     nombre: '',
     documento: '',
@@ -78,7 +80,11 @@ const RegisterData = () => {
       <input name="vrCredito" placeholder="Crédito Solicitado" type="number" step="0.01" value={form.vrCredito} onChange={handleChange} />
       <input name="numCuotas" placeholder="Número de Cuotas" type="number" value={form.numCuotas} onChange={handleChange} />
       <button onClick={handleSubmit}>Registrar</button>
+      <button className="back-button" onClick={() => navigate("/Menu")}>
+       ⟵ Regresar
+       </button>
       {mensaje && <p className="mensaje">{mensaje}</p>}
+      
     </div>
   );
 };
