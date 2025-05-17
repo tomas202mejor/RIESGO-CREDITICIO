@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class UserResponse(BaseModel):
     id: int
-    username: str
+    username: str        # <-- cambia Nusuario por username
     email: str
     nombre: str
     telefono: str
@@ -10,4 +10,4 @@ class UserResponse(BaseModel):
 
 
     class Config:
-        orm_mode = True  
+        orm_mode = True
