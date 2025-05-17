@@ -4,7 +4,7 @@ from Login import router as login_router
 from registro import router as registro_router
 from registroDatosFin import router as finanzas_router  
 from DatosUsuario import router as usuario_router
-
+from Consulta import router as Consulta_router
 from dotenv import load_dotenv
 import os
 
@@ -36,7 +36,11 @@ app.include_router(login_router, prefix="/auth", tags=["Autenticación"])
 app.include_router(registro_router, prefix="/users", tags=["Registro de Usuarios"])
 app.include_router(finanzas_router, prefix="/finanzas", tags=["Finanzas"])  # ✅ Asegúrate que estas rutas usen Depends si son privadas
 app.include_router(usuario_router, prefix="/usuario", tags=["Datos del Usuario"])
+<<<<<<< HEAD
 app.include_router
+=======
+app.include_router(Consulta_router,prefix="/Consulta",tags=["Consulta datos del usuario"])
+>>>>>>> 9667c03d8008c7ceb3a45ed06e419c8191661515
 
 # Ruta de inicio
 @app.get("/", tags=["Inicio"])

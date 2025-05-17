@@ -36,7 +36,7 @@ const RegisterData = () => {
       const body = {
         nombre,
         documento,  // Enviar como cadena, sin convertir a número
-        correo,
+        Correo,
         vrIngresos: parseFloat(vrIngresos),
         vrGastos: parseFloat(vrGastos),
         vrCredito: parseFloat(vrCredito),
