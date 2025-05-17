@@ -9,7 +9,11 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=".venv/.env")
 
+<<<<<<< HEAD
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:1234@localhost:3306/credito")
+=======
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:1221@localhost:3306/credito")
+>>>>>>> 9667c03d8008c7ceb3a45ed06e419c8191661515
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -62,5 +66,4 @@ def guardar_datos_finac(data: DatosFinac, usuario=Depends(obtener_usuario_desde_
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"❌ Error al guardar: {str(e)}")
-    finally:
-        db.close()
+    finally:db.close()

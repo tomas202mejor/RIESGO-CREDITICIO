@@ -119,7 +119,7 @@ const LoginSignup = () => {
             <div className="input"><input type="text" placeholder="Nombres" value={nombres} onChange={(e) => setNombres(e.target.value)} /></div>
             <div className="input"><input type="text" placeholder="Apellidos" value={apellidos} onChange={(e) => setApellidos(e.target.value)} /></div>
             <div className="input"><input type="text" placeholder="Documento" value={ndocumento} onChange={(e) => setNdocumento(e.target.value)} /></div>
-            <div className="input"><input type="email" placeholder="Correo" value={correo} onChange={(e) => setCorreo(e.target.value)} /></div>
+            <div className="input"><input type="Correo" placeholder="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} /></div>
             <div className="input"><input type="tel" placeholder="Teléfono" value={telefono} onChange={(e) => setTelefono(e.target.value)} /></div>
             <div className="input"><input type="password" placeholder="Contraseña" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} /></div>
           </>
@@ -127,7 +127,7 @@ const LoginSignup = () => {
 
         {isLogin && (
           <>
-            <div className="input"><input type="email" placeholder="Correo" value={user} onChange={(e) => setUser(e.target.value)} /></div>
+            <div className="input"><input type="Correo" placeholder="correo" value={user} onChange={(e) => setUser(e.target.value)} /></div>
             <div className="input"><input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
           </>
         )}

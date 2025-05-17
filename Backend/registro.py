@@ -8,7 +8,11 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=".venv/.env")
 
+<<<<<<< HEAD
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:1234@localhost:3306/credito")
+=======
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:1221@localhost:3306/credito")
+>>>>>>> 9667c03d8008c7ceb3a45ed06e419c8191661515
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -73,4 +77,3 @@ def registrar_usuario(user: UserCreate):
     db.refresh(user_db)
     db.close()
     return user_db
-
