@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './RegisterData.css';
+import { useNavigate } from "react-router-dom";
 
 const RegisterData = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     nombre: '',
     documento: '',
@@ -36,7 +38,7 @@ const RegisterData = () => {
       const body = {
         nombre,
         documento,  // Enviar como cadena, sin convertir a número
-        Correo,
+        correo,     // Corregido a minúscula
         vrIngresos: parseFloat(vrIngresos),
         vrGastos: parseFloat(vrGastos),
         vrCredito: parseFloat(vrCredito),
@@ -56,9 +58,10 @@ const RegisterData = () => {
 
       if (res.ok && data.idResp === "0") {
         setMensaje('✅ ' + data.msg);
+        // Puedes navegar o resetear formulario aquí si quieres
       } else {
         setMensaje('❌ Ocurrió un error: ' + (data.msg || data.detail || 'Error desconocido.'));
-        console.log(data);  // Aquí puedes ver más detalles del error
+        console.log(data);  // Para más detalles
       }
 
     } catch (error) {
@@ -83,10 +86,10 @@ const RegisterData = () => {
       <div className="button-register">
         <button className="register" onClick={handleSubmit}>Registrar</button>
       </div>
-      
+
       {mensaje && <p className="mensaje">{mensaje}</p>}
     </div>
   );
 };
 
-export default RegisterData;  // Asegúrate de tener esta línea al final
+export default RegisterData;
