@@ -1,0 +1,86 @@
+.form-container {
+  background-color: rgba(0, 0, 0, 0.6);
+  max-width: 550px;
+  min-height: 700px;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px #000;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: auto;
+}
+
+h2 {
+  color: #1d4ed8;
+  font-size: 24px;
+  margin-bottom: 30px;
+  text-align: center;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+}
+
+.consulta-btn {
+  background-color: #1d4ed8;
+  padding: 12px 24px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  transition: background 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.consulta-btn:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.consulta-btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.mensaje {
+  margin-top: 10px;
+  color: #f1c40f;
+  text-align: center;
+}
+
+.resultado {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.resultado h3 {
+  color: #1d4ed8;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.resultado p {
+  font-size: 18px;
+  margin: 6px 0;
+}
+.scrollable {
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 10px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background-color: transparent;
+}

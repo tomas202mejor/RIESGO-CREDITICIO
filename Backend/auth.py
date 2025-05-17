@@ -30,23 +30,26 @@ def crear_token_acceso(data: dict, expires_delta: Optional[timedelta] = None):
 def verificar_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        # Puedes agregar más validaciones aquí si lo necesitas (por ejemplo, verificar si el correo existe)
         return payload
     except JWTError:
         raise HTTPException(status_code=401, detail="Token inválido o expirado")
 
 # Dependencia que extrae los datos del usuario desde el token
 def obtener_usuario_desde_token(token: str = Depends(oauth2_scheme)):
-    # Decodificamos el token para obtener el usuario
+    
     payload = verificar_token(token)
-    # Extraemos la información del usuario (ID y email) del payload
+
     email: str = payload.get("email")
     id_usuario: int = payload.get("id_usuario")
+
+
     if not email or not id_usuario:
         raise HTTPException(status_code=401, detail="Token inválido")
-    
-    # Retornamos los datos del usuario (esto será útil para hacer consultas a la base de datos)
-    return {"email": email, "id_usuario": id_usuario}
 
-# Esta función es un alias para obtener el usuario actual desde el token
+    return {
+        "email": email,
+        "id_usuario": id_usuario,
+    }
+
+# Esta función es un alias para usar como dependencia
 get_current_user = obtener_usuario_desde_token

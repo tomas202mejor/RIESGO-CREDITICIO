@@ -1,5 +1,14 @@
 from pydantic import BaseModel
 
+class ReporteFinanciero(BaseModel):
+    nombre: str
+    documento: str
+    vrIngresos: float
+    vrGastos: float
+    vrCredito: float
+    numCuotas: int
+    balance: float
+    
 class UserResponse(BaseModel):
     id: int
     username: str
