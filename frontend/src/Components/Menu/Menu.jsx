@@ -28,7 +28,7 @@ const Menu = () => {
           <button className="dashboard-btn" onClick={() => navigate('/RegisterData')}>
             Gestión de Solicitudes
           </button>
-          <button className="dashboard-btn">Análisis de Riesgo</button>
+          <button className="dashboard-btn" onClick={() => navigate('/ConsultarRiesgo')}>Análisis de Riesgo</button>
           <button className="dashboard-btn">Reportes y Estadísticas</button>
         </div>
       </div>

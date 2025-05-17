@@ -1,11 +1,14 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
   background: linear-gradient(to bottom, #0f172a, #1e3a8a); /* azul oscuro elegante */
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 100px;
+  margin-bottom: 120px;
 }
 
 .container {
@@ -16,6 +19,7 @@ body {
   backdrop-filter: blur(10px);
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
   color: white;
+  
 }
 
 .header {
@@ -57,7 +61,7 @@ body {
   outline: none;
   color: #ffffff;
   font-size: 16px;
-  width: 100%;
+  width: 300px;
 }
 
 .forgot-password {

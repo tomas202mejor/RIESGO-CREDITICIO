@@ -36,6 +36,7 @@ app.include_router(login_router, prefix="/auth", tags=["Autenticación"])
 app.include_router(registro_router, prefix="/users", tags=["Registro de Usuarios"])
 app.include_router(finanzas_router, prefix="/finanzas", tags=["Finanzas"])  # ✅ Asegúrate que estas rutas usen Depends si son privadas
 app.include_router(usuario_router, prefix="/usuario", tags=["Datos del Usuario"])
+app.include_router
 
 # Ruta de inicio
 @app.get("/", tags=["Inicio"])

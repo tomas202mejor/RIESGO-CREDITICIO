@@ -70,14 +70,20 @@ const RegisterData = () => {
   return (
     <div className="form-container">
       <h2>Registrar Datos Financieros</h2>
-      <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} />
-      <input name="documento" placeholder="Documento" type="number" value={form.documento} onChange={handleChange} />
-      <input name="correo" placeholder="Correo" type="email" value={form.correo} onChange={handleChange} />
-      <input name="vrIngresos" placeholder="Ingresos" type="number" step="0.01" value={form.vrIngresos} onChange={handleChange} />
-      <input name="vrGastos" placeholder="Gastos" type="number" step="0.01" value={form.vrGastos} onChange={handleChange} />
-      <input name="vrCredito" placeholder="Crédito Solicitado" type="number" step="0.01" value={form.vrCredito} onChange={handleChange} />
-      <input name="numCuotas" placeholder="Número de Cuotas" type="number" value={form.numCuotas} onChange={handleChange} />
-      <button onClick={handleSubmit}>Registrar</button>
+      <div className="inputs">
+        <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} />
+        <input name="documento" placeholder="Documento" type="number" value={form.documento} onChange={handleChange} />
+        <input name="correo" placeholder="Correo" type="email" value={form.correo} onChange={handleChange} />
+        <input name="vrIngresos" placeholder="Ingresos" type="number" step="0.01" value={form.vrIngresos} onChange={handleChange} />
+        <input name="vrGastos" placeholder="Gastos" type="number" step="0.01" value={form.vrGastos} onChange={handleChange} />
+        <input name="vrCredito" placeholder="Crédito Solicitado" type="number" step="0.01" value={form.vrCredito} onChange={handleChange} />
+        <input name="numCuotas" placeholder="Número de Cuotas" type="number" value={form.numCuotas} onChange={handleChange} />
+      </div>
+
+      <div className="button-register">
+        <button className="register" onClick={handleSubmit}>Registrar</button>
+      </div>
+      
       {mensaje && <p className="mensaje">{mensaje}</p>}
     </div>
   );
