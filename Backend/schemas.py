@@ -11,7 +11,7 @@ class ReporteFinanciero(BaseModel):
     
 class UserResponse(BaseModel):
     id: int
-    username: str        # <-- cambia Nusuario por username
+    username: str       
     email: str
     nombre: str
     telefono: str

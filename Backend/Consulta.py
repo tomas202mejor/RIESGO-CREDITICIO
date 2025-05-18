@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
-from schemas import ReporteFinanciero 
+from schemas import ReporteFinanciero
 from auth import get_current_user
 from database import connect_to_mysql, execute_query, disconnect_from_mysql
 
-from typing import List  # Importa List con mayúscula
+from typing import List
 
 router = APIRouter()
 
-@router.get("/Consulta", response_model=List[ReporteFinanciero])  # Lista de esquemas
+@router.get("/Consulta", response_model=List[ReporteFinanciero])
 def get_datos_financieros(current_user: dict = Depends(get_current_user)):
     db = None
     try:
@@ -22,7 +22,7 @@ def get_datos_financieros(current_user: dict = Depends(get_current_user)):
             raise HTTPException(status_code=404, detail="Documento no encontrado para el usuario")
 
         documento = result_doc[0]["Ndocumento"]
-        print(documento)
+        print("📄 Documento del usuario:", documento)
 
         # Consultar los datos financieros con el documento
         query_fin = """
@@ -49,11 +49,15 @@ def get_datos_financieros(current_user: dict = Depends(get_current_user)):
                 "numCuotas": datos["cuotas"],
                 "balance": balance
             }
-            reportes.append(reporte)  # Esto debe ir dentro del ciclo
+            reportes.append(reporte)
 
         return reportes
 
+    except HTTPException as http_ex:
+        raise http_ex  # Re-lanza errores controlados como 404
+
     except Exception as e:
+        print("❌ Error inesperado:", e)
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
 
     finally:

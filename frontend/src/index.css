@@ -40,9 +40,9 @@ body {
   transition: transform 0.3s ease;
 }
 
-.container:hover {
+/*.container:hover {
   transform: scale(1.02);
-}
+}/*
 
 /* Header */
 .header {
