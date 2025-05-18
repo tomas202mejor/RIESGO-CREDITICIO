@@ -9,48 +9,49 @@
 
 body {
   margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
-display: flex;
-  background: linear-gradient(to bottom, #0a0f2c, #1c2e8d);
-background-attachment: fixed;
-  min-height: 100vh;
-  align-items: start;
-    justify-content: center;
-}
-
-.form-container {
-  background-color: rgba(0, 0, 0, 0.6);
-  width: 90%;
-  max-width: 550px;
-  margin: 50px auto;
-  padding: 40px 30px;
-  border-radius: 15px;
-  box-shadow: 0 0 15px #1c2e8d;
-  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to bottom, #0f172a, #1e3a8a); /* azul oscuro elegante */
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  margin-bottom: 100px;
+
+}
+.form-container {
+  width: 380px;
+  padding: 40px;
+  border-radius: 16px;
+  background-color: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  color: white;
 }
 
 .form-container h2 {
   color: #1d4ed8;
+  margin-bottom: 30px;
   font-size: 24px;
-  margin-bottom: 25px;
   text-align: center;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 5px;
-  width: 100%;
 }
 
-.form-container input {
+.inputs {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+input {
   width: 100%;
-  margin-bottom: 16px;
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 1px solid #2f4b99;
-  background-color: #1b2554;
-  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+
   font-size: 16px;
   outline: none;
   transition: border-color 0.3s ease, background-color 0.3s ease;
@@ -59,17 +60,44 @@ background-attachment: fixed;
   display: block;
   box-sizing: border-box;
 }
+.form-container input:focus {
+  border-color: #1d4ed8;
+}
+
 
 
 .form-container input::placeholder {
-  color: #bdc3c7;
+  color: #606264;
 }
 
 .form-container input:focus {
-  border-color: #3498db;
-  background-color: #223175;
+  border-color: #1d4ed8;
 }
 
+.button-register {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+
+}
+
+ /* Botón de registrar */
+  .register {
+    background-color: #1d4ed8;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.3s ease;
+  }
+  
+  .register:hover {
+    background-color: #2563eb;
+  }
+
+  /*
 .form-container button {
   background-color: #1d4ed8;
   color: white;
