@@ -11,9 +11,13 @@ def connect_to_mysql():
 def execute_query(db, query, params=None):
     cursor = db.cursor(dictionary=True)
     cursor.execute(query, params)
-    result = cursor.fetchall()
-    cursor.close()
-    return result
-
+    
+    if query.strip().lower().startswith("select"):
+        resultado = cursor.fetchall()
+        cursor.close()
+        return resultado
+    else:
+        db.commit()
+        cursor.close()
 def disconnect_from_mysql(db):
     db.close()

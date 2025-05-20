@@ -4,6 +4,9 @@ from Login import router as login_router
 from registro import router as registro_router
 from registroDatosFin import router as finanzas_router  
 from DatosUsuario import router as usuario_router
+from recuperacion import router as recuperacion_router 
+from ResetPaswor import router as reset_router
+
 from routes import user
 from Consulta import router as Consulta_router
 from dotenv import load_dotenv
@@ -33,9 +36,11 @@ app.add_middleware(
 )
 
 # Incluir routers
+app.include_router(reset_router, prefix="/auth", tags=["Restablecer Contraseña"])
+app.include_router(recuperacion_router, prefix="/auth", tags=["Recuperación de contraseña"])
 app.include_router(login_router, prefix="/auth", tags=["Autenticación"])
 app.include_router(registro_router, prefix="/users", tags=["Registro de Usuarios"])
-app.include_router(finanzas_router, prefix="/finanzas", tags=["Finanzas"])  # ✅ Asegúrate que estas rutas usen Depends si son privadas
+app.include_router(finanzas_router, prefix="/finanzas", tags=["Finanzas"]) 
 app.include_router(usuario_router, prefix="/usuario", tags=["Datos del Usuario"])
 app.include_router
 app.include_router(Consulta_router,prefix="/Consulta",tags=["Consulta datos del usuario"])

@@ -55,7 +55,7 @@ mensaje_html = f"""
 
 # Configuración del correo
 remitente = "scoringfinac@gmail.com"
-destinatario = "generico@gmail.com"
+destinatario = "tomas202mejor@gmail.com"
 asunto = "Resultado de solicitud de credito"
 
 # Autenticación

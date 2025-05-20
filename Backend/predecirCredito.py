@@ -6,10 +6,10 @@ modelo = joblib.load("modelo_credito.pkl")
 
 #Crear registro con los datos del usuario
 nuevo_registro = {
-    "ingresos": 20000000,
-    "gastos": 800000,
-    "monto_credito": 4500000,
-    "cuotas": 6
+    "ingresos": 2800000,
+    "gastos": 1300000,
+    "monto_credito": 8000000,
+    "cuotas": 9
 }
 
 #DataFrame para evaluar registro

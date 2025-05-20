@@ -6,6 +6,8 @@ import RegisterData from './Components/RegisterData/RegisterData';
 import ConsultarRiesgo from './Components/ConsultarRiesgo/consultarRiesgo';
 import Profile from './Components/Profile/Profile';
 import ConsultaFinanciera from './Components/ConsultaFinanciera/Consultafinanciera.jsx';
+import OlvidoContraseña from './Components/Olvido_contraseña/OlvidoContraseña.jsx';
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <Route path="/" element={<LoginSignup />} />
         <Route path="/Menu" element={<Menu />} />
         <Route path="/RegisterData" element={<RegisterData />} />
+        <Route path="/olvide_password" element={<OlvidoContraseña />} />
         <Route path="/ConsultarRiesgo" element={<ConsultarRiesgo />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/finanzas/me" element={<ConsultaFinanciera />} />
