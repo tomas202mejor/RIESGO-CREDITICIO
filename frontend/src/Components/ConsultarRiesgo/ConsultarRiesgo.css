@@ -58,7 +58,7 @@
   .client-section {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 37px;
   }
   
   .recommendation-section {
@@ -125,6 +125,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
+    margin-top: 20px;
   }
   
   .recommendation-card.aprobado {
@@ -133,6 +134,10 @@
   
   .recommendation-card.rechazado {
     border-top: 5px solid #e74c3c;
+  }
+
+  .recommendation-card.pendiente {
+    border-top: 5px solid #6b6b6bc2;
   }
   
   .recommendation-card h3 {
@@ -144,13 +149,18 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-    margin: 15px 0;
+    margin: 25px 0;
+  }
+
+  .ml-metrics div {
+    margin: 0 0 10px 5px;
   }
   
   .ml-connection {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid #eee;
+    text-align: center;
   }
   
   .ml-connection pre {
@@ -211,6 +221,13 @@
     margin-bottom: 20px;
     opacity: 0.6;
   }
+
+  .loading {
+  color: #61dafb;
+  font-size: 20px;
+  text-align: center;
+  margin-top: 50px;
+}
   
   /* Responsive */
   @media (max-width: 768px) {
