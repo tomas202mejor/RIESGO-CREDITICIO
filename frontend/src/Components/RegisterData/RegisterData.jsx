@@ -24,13 +24,13 @@ const RegisterData = () => {
     const { nombre, documento, correo, vrIngresos, vrGastos, vrCredito, numCuotas } = form;
 
     if (!nombre || !documento || !correo || !vrIngresos || !vrGastos || !vrCredito || !numCuotas) {
-      setMensaje('⚠️ Por favor completa todos los campos.');
+      setMensaje('Por favor completa todos los campos.');
       return;
     }
 
     const token = localStorage.getItem('token');
     if (!token) {
-      setMensaje('⚠️ No se encontró el token de autenticación.');
+      setMensaje('No se encontró el token de autenticación.');
       return;
     }
 
@@ -60,7 +60,7 @@ const RegisterData = () => {
         setMensaje('✅ ' + data.msg);
         // Puedes navegar o resetear formulario aquí si quieres
       } else {
-        setMensaje('❌ Ocurrió un error: ' + (data.msg || data.detail || 'Error desconocido.'));
+        setMensaje('Ocurrió un error: ' + (data.msg || data.detail || 'Error desconocido.'));
         console.log(data);  // Para más detalles
       }
 

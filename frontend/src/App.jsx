@@ -7,6 +7,7 @@ import ConsultarRiesgo from './Components/ConsultarRiesgo/consultarRiesgo';
 import Profile from './Components/Profile/Profile';
 import ConsultaFinanciera from './Components/ConsultaFinanciera/Consultafinanciera.jsx';
 import OlvidoContraseña from './Components/Olvido_contraseña/OlvidoContraseña.jsx';
+import CreditRiskDashboard from './Components/ConsultarRiesgo/consultarRiesgo/'; 
 
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
         <Route path="/ConsultarRiesgo" element={<ConsultarRiesgo />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/finanzas/me" element={<ConsultaFinanciera />} />
+        <Route path="/ConsultarRiesgo/:id" element={<CreditRiskDashboard />} />
+        <Route path="/ConsultarRiesgo/:id" element={<ConsultarRiesgo />} />
       </Routes>
     </Router>
   );

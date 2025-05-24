@@ -26,7 +26,7 @@ def get_datos_financieros(current_user: dict = Depends(get_current_user)):
 
         # Consultar los datos financieros con el documento
         query_fin = """
-            SELECT nombre, documento, vrIngresos, vrGastos, vrCredito, cuotas
+            SELECT idRegistro, nombre, documento, vrIngresos, vrGastos, vrCredito, cuotas, estado
             FROM registro_financiero
             WHERE documento = %s
         """
@@ -41,13 +41,15 @@ def get_datos_financieros(current_user: dict = Depends(get_current_user)):
             balance = datos["vrIngresos"] - datos["vrGastos"] - datos["vrCredito"]
 
             reporte = {
+                "id": datos["idRegistro"],
                 "nombre": datos["nombre"],
                 "documento": datos["documento"],
                 "vrIngresos": datos["vrIngresos"],
                 "vrGastos": datos["vrGastos"],
                 "vrCredito": datos["vrCredito"],
                 "numCuotas": datos["cuotas"],
-                "balance": balance
+                "balance": balance,
+                "estado": datos["estado"]
             }
             reportes.append(reporte)
 

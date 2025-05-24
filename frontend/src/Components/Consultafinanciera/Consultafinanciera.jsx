@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearchDollar } from '@fortawesome/free-solid-svg-icons';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 import './ConsultaFinanciera.css';
 
 const ConsultaFinanciera = () => {
@@ -10,7 +13,7 @@ const ConsultaFinanciera = () => {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      setMensaje('❌ No estás autenticado. Inicia sesión.');
+      setMensaje('No estás autenticado. Inicia sesión.');
       setData([]);
       return;
     }
@@ -31,11 +34,11 @@ const ConsultaFinanciera = () => {
       if (res.ok) {
         setData(result);
       } else {
-        setMensaje(result.detail || '❌ No se encontró información financiera.');
+        setMensaje(result.detail || 'No se encontró información financiera.');
       }
     } catch (error) {
       console.error('Error al consultar datos:', error);
-      setMensaje('⚠️ Error de conexión con el servidor');
+      setMensaje('Error de conexión con el servidor');
     } finally {
       setLoading(false);
     }
@@ -55,6 +58,7 @@ const ConsultaFinanciera = () => {
         <div className="resultado scrollable">
           <h3>Resumen Financiero</h3>
           {data.map((item, index) => (
+            
             <div key={index} className="registro">
               <p><strong>Nombre:</strong> {item.nombre}</p>
               <p><strong>Documento:</strong> {item.documento}</p>
@@ -62,7 +66,11 @@ const ConsultaFinanciera = () => {
               <p><strong>Gastos:</strong> ${item.vrGastos}</p>
               <p><strong>Créditos:</strong> ${item.vrCredito}</p>
               <p><strong>Cuotas:</strong> {item.numCuotas}</p>
-              <p><strong>Balance:</strong> ${item.balance}</p>
+              <p><strong>Estado:</strong> {item.estado == 0? 'Pendiente':'Procesado'}
+              {' '}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <a onClick={(e) => {window.open(`/ConsultarRiesgo/${item.id}`, '_blank');}} title={item.estado == 0? 'Procesar Crédito':'Ver Resultado'}>
+                <FontAwesomeIcon icon={item.estado == 0?faSearchDollar:faEye} style={{color: 'white',fontSize: 20, cursor:'pointer'}}/>
+              </a></p>
               <hr />
             </div>
           ))}
