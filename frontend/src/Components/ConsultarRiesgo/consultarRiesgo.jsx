@@ -16,6 +16,7 @@ const CreditRiskDashboard = () => {
   const [data, setData] = useState([]);
   const [creditoData, setCreditoData] = useState([]);
   const [modeloData, setModeloData] = useState([]);
+  const [correoData, setCorreoData] = useState({});
   const [mensaje, setMensaje] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -160,6 +161,44 @@ const CreditRiskDashboard = () => {
     }
   };
 
+  const enviarResultado = async (item) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch("http://localhost:8000/send/sendScoring", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          nombre: item.nombre,
+          documento: item.documento,
+          correo: userData.email,
+          credito: item.vrCredito,
+          cuotas: item.numCuotas,
+          resultado: item.rentable,
+          porcentajeAprobado: item.porcentAprobado,
+          porcentajeRechazo: item.porcentRechazo
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setCorreoData(prev => ({
+          ...prev,
+          [item.id]: result.message
+        }));
+        console.log("Respuesta del correo:", result);
+      } else {
+        console.error("Error:", result.detail || "No se pudo enviar correo");
+      }
+    } catch (error) {
+      console.error("Error al enviar datos para correo:", error);
+    }
+  };
+  
+
   return (
 
     <div className="credit-risk-dashboard">
@@ -237,16 +276,16 @@ const CreditRiskDashboard = () => {
                     <div className="ml-metrics">
                       <div>
                         <label><strong>Porcentaje de Aprovado: </strong></label>
-                        <span>%{item.porcentAprobado != null?item.porcentAprobado:''}</span>
+                        <span>{item.porcentAprobado != null?item.porcentAprobado:''}%</span>
                       </div>
                       <div>
                         <label><strong>Porcentaje de Rechazo: </strong> </label>
-                        <span>%{item.porcentRechazo != null?item.porcentRechazo:''}</span>
+                        <span>{item.porcentRechazo != null?item.porcentRechazo:''}%</span>
                       </div>
                       <div style={{display: 'inline-block', width:'100%'}}>
                         <label><strong>Respuesta del Modelo: </strong> </label>
                         {item.rentable != null ? (
-                          <span style={{ display: 'block', width: '100%'}}>{item.rentable == 1?'Su solicitud de crédito es rentable, ha sido aprobada':'Su solicitud de crédito es no rentable, ha sido rechazada'}</span>
+                          <span style={{ display: 'block', width: '100%'}}>{item.rentable == 1?'Su solicitud de crédito es rentable, ha sido aprobada':'Su solicitud de crédito no es rentable, ha sido rechazada'}</span>
                         ) : (
                           <span></span>
                         )}
@@ -254,16 +293,20 @@ const CreditRiskDashboard = () => {
                     </div>
                   </div></React.Fragment>
               ))}
+            <div className="ml-connection">
             {creditoData.map((item,index) => (
               <React.Fragment key={index}>
-              <div className="ml-connection">
                 {item.estado == 0 ? (
                   <button onClick={(e) => evaluarCredito(item)}>Evaluar crédito</button>
                 ) : (
-                  <button onClick={() => console.log("Ver análisis")} style={{backgroundColor:'green'}}>Enviar Resultado</button>
+                  <button onClick={() => enviarResultado(item)} style={{backgroundColor:'green'}}>Enviar Resultado</button>
                 )}
-              </div></React.Fragment>
+                {correoData[item.id] && (
+                  <span style={{ display: 'block', width: '100%', marginTop: '2px'}}>{correoData[item.id]}</span>
+                )}
+              </React.Fragment>
             ))}
+            </div>
           </div>
         </div>
       </div>

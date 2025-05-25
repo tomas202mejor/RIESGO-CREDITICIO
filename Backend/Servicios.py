@@ -8,6 +8,7 @@ from recuperacion import router as recuperacion_router
 from ResetPaswor import router as reset_router
 from consultaCredito import router as consultaCreditoRouter
 from evaluarCredito import router as modelo_router
+from sendScoring import router as enviaCorreoRouter
 from routes import user
 from Consulta import router as Consulta_router
 from dotenv import load_dotenv
@@ -47,6 +48,7 @@ app.include_router
 app.include_router(Consulta_router,prefix="/Consulta",tags=["Consulta datos del usuario"])
 app.include_router(consultaCreditoRouter, prefix="/Consulta")
 app.include_router(modelo_router, prefix="/Modelo", tags=["Evaluación Modelo"])
+app.include_router(enviaCorreoRouter, prefix="/send", tags=["Envia Resultado"])
 # Ruta de inicio
 @app.get("/", tags=["Inicio"])
 def read_root():
