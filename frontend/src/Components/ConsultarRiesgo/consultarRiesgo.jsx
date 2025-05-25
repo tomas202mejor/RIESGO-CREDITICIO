@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import Grafico from "../GraficoRiesgo/Grafico.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import './ConsultarRiesgo.css';
@@ -9,8 +10,7 @@ const CreditRiskDashboard = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const handleLogout = () => {
-    // Aquí puedes agregar cualquier lógica adicional de cierre de sesión (como limpiar el estado, cookies, etc.)
-    navigate('/'); // Redirige al login
+    navigate('/'); 
   };
   const [userData, setUserData] = useState(null);
   const [data, setData] = useState([]);
@@ -273,6 +273,12 @@ const CreditRiskDashboard = () => {
                     ) : (
                       <h3>Decisión: Sin Procesar</h3>
                     )}
+                    {item.porcentAprobado != null && item.porcentRechazo != null && (
+                        <Grafico
+                          aprobado={item.porcentAprobado}
+                          rechazado={item.porcentRechazo}
+                        />
+                      )}
                     <div className="ml-metrics">
                       <div>
                         <label><strong>Porcentaje de Aprovado: </strong></label>

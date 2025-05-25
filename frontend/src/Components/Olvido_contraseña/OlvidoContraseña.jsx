@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // si usas react-router
+import { useNavigate } from 'react-router-dom'; 
+import './OlvidoContraseña.css';
 
 const ResetPasswordPopup = ({ onClose }) => {
   const [codigo, setCodigo] = useState('');
   const [nuevaClave, setNuevaClave] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();  // <--- Aquí faltaba definir navigate
 
   const handleSubmit = async () => {
     if (!codigo || !nuevaClave) {
@@ -50,8 +52,17 @@ const ResetPasswordPopup = ({ onClose }) => {
           value={nuevaClave}
           onChange={(e) => setNuevaClave(e.target.value)}
         />
-        <button onClick={handleSubmit}>Cambiar contraseña</button>
-        <button onClick={onClose} style={{ marginLeft: '10px' }}>Cancelar</button>
+        <button className="register" onClick={handleSubmit}>
+          Cambiar contraseña
+        </button>
+        <button
+          className="register"
+          style={{ marginLeft: '10px' }}
+          onClick={() => navigate('/')}
+        >
+          ← Regresar
+        </button>
+
         {message && <p>{message}</p>}
       </div>
     </div>
@@ -103,7 +114,7 @@ const OlvidoContraseña = () => {
             placeholder="Ingresa tu correo registrado"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            disabled={showResetPopup} // bloqueamos mientras se muestra el popup
+            disabled={showResetPopup}
           />
         </div>
       </div>
@@ -117,8 +128,9 @@ const OlvidoContraseña = () => {
           Enviar
         </div>
         <button
+          className="register"
           style={{ marginLeft: '15px' }}
-          onClick={() => navigate('/')} // o la ruta que quieras para regresar
+          onClick={() => navigate('/')}
         >
           ← Regresar
         </button>
