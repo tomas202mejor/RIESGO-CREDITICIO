@@ -101,7 +101,7 @@ const OlvidoContraseña = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container-olvido">
       <div className="header">
         <div className="text">Recuperar contraseña</div>
         <div className="underline"></div>

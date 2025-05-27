@@ -1,0 +1,83 @@
+.profile-container {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2.5rem 3rem;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(185, 28, 28, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #3b1a1a;
+  user-select: none;
+}
+
+/* Título */
+.profile-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #8b1212; /* rojo oscuro elegante */
+  margin-bottom: 2rem;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+/* Cada fila de dato como flex container */
+.profile-item {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid #f4c7c7;
+  color: #4b1a1a;
+  user-select: text;
+  font-size: 1.1rem;
+}
+
+/* Etiqueta (label) con ancho fijo para alinear */
+.profile-item strong {
+  font-weight: 700;
+  color: #b91c1c;
+  min-width: 180px;
+  user-select: none;
+}
+
+/* Valor alineado a la derecha, que se adapte */
+.profile-item span {
+  flex: 1;
+  text-align: right;
+  overflow-wrap: break-word; /* evita overflow con textos largos */
+}
+
+/* Estado de carga */
+.loading {
+  font-size: 1.25rem;
+  text-align: center;
+  color: #b91c1c;
+  margin-top: 5rem;
+  user-select: none;
+}
+
+/* Wrapper para botón de regreso si lo agregas */
+.back-button-wrapper {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+/* Ejemplo botón regreso */
+.back-button-wrapper button {
+  background-color: #8b1212;
+  color: #fff;
+  border: none;
+  padding: 0.85rem 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 6px 15px rgba(139, 18, 18, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.back-button-wrapper button:hover {
+  background-color: #b91c1c;
+  box-shadow: 0 8px 22px rgba(185, 28, 28, 0.45);
+}

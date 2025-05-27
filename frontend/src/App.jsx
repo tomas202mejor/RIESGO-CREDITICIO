@@ -2,12 +2,12 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginSignup from './Components/LoginSignup/LoginSignup';
 import Menu from './Components/Menu/Menu';
-import RegisterData from './Components/RegisterData/RegisterData';
-import ConsultarRiesgo from './Components/ConsultarRiesgo/consultarRiesgo';
-import Profile from './Components/Profile/Profile';
-import ConsultaFinanciera from './Components/ConsultaFinanciera/Consultafinanciera.jsx';
+import RegisterData from './Components/Menu/RegisterData.jsx';
+import ConsultarRiesgo from './Components/Menu/consultarRiesgo';
+import Profile from './Components/Menu/Profile';
+import ConsultaFinanciera from './Components/Menu/ConsultaFinanciera.jsx';
 import OlvidoContraseña from './Components/Olvido_contraseña/OlvidoContraseña.jsx';
-import CreditRiskDashboard from './Components/ConsultarRiesgo/consultarRiesgo/'; 
+import CreditRiskDashboard from './Components/Menu/consultarRiesgo/'; 
 
 
 function App() {
