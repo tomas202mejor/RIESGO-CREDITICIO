@@ -64,6 +64,17 @@ const RegisterData = () => {
       return;
     }
 
+        // Validación para evitar números negativos
+    if (
+      parseFloat(vrIngresos) < 0 ||
+      parseFloat(vrGastos) < 0 ||
+      parseFloat(vrCredito) < 0 ||
+      parseInt(numCuotas) < 0
+    ) {
+      setMensaje('⚠️ Los valores numéricos no pueden ser negativos.');
+      return;
+    }
+
     const token = localStorage.getItem('token');
     if (!token) {
       setMensaje('No se encontró el token de autenticación.');
@@ -107,7 +118,7 @@ const RegisterData = () => {
   return (
     <div className="form-container">
       <h2>Registrar Datos Financieros</h2>
-      <h3>Bienvenida, {form.nombre || 'Usuario'}!</h3>
+      
 
       <div className="inputs">
         <input name="nombre" placeholder="Nombre" value={form.nombre} readOnly />

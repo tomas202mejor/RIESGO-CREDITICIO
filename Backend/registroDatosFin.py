@@ -1,6 +1,6 @@
 # registroDatosFin.py
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, confloat, conint
 from sqlalchemy import Column, Integer, Float, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from auth import obtener_usuario_desde_token
@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=".venv/.env")
 
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:1234@localhost:3306/credito")
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:123456789@localhost:3306/credito")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -30,15 +30,14 @@ class RegistroFinanciero(Base):
 
 Base.metadata.create_all(bind=engine)
 
-# Esquema de entrada
 class DatosFinac(BaseModel):
     nombre: str
     documento: str
     correo: str
-    vrIngresos: float
-    vrGastos: float
-    vrCredito: float
-    numCuotas: int
+    vrIngresos: confloat(ge=0)  # No se permiten ingresos negativos
+    vrGastos: confloat(ge=0)    # No se permiten gastos negativos
+    vrCredito: confloat(ge=0)   # No se permite crédito negativo
+    numCuotas: conint(ge=1)     # Mínimo 1 cuota
 
 @router.post("/guardarDatosFinac", tags=["Datos Financieros"])
 def guardar_datos_finac(data: DatosFinac, usuario=Depends(obtener_usuario_desde_token)):

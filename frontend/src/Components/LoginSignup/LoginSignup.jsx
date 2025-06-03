@@ -58,6 +58,16 @@ const LoginSignup = () => {
       return;
     }
 
+    if (!/^\d+$/.test(ndocumento)) {
+      setMessage('⚠️ El documento debe contener solo números positivos.');
+      return;
+    }
+
+    if (!/^\d+$/.test(telefono)) {
+      setMessage('⚠️ El teléfono debe contener solo números.');
+      return;
+    }
+
     try {
       const res = await fetch('http://localhost:8000/users/registro', {
         method: 'POST',
@@ -105,56 +115,74 @@ const LoginSignup = () => {
     setRegPassword('');
   };
 
- return (
-  <div className="app-background">
-    <div className="left-panel">
-      <h1>Gestion De Riesgos</h1>
-      <p>¡Bienvenido! Aquí podrás consultar riesgos, registrar tus datos y acceder a tus informes financieros.</p>
-    </div>
+  return (
+    <div className="app-background">
+      <div className="left-panel">
+        <h1>Gestion De Riesgos</h1>
+        <p>¡Bienvenido! Aquí podrás consultar riesgos, registrar tus datos y acceder a tus informes financieros.</p>
+      </div>
 
-    <div className="right-panel">
-      <div className="container">
-        <div className="header">
-          <div className="text">{isLogin ? 'Ingresar' : 'Registrarse'}</div>
-          <div className="underline"></div>
-        </div>
-
-        <div className="inputs">
-          {!isLogin ? (
-            <>
-              <div className="input"><input type="text" placeholder="Usuario" value={nusuario} onChange={(e) => setNusuario(e.target.value)} /></div>
-              <div className="input"><input type="text" placeholder="Nombres" value={nombres} onChange={(e) => setNombres(e.target.value)} /></div>
-              <div className="input"><input type="text" placeholder="Apellidos" value={apellidos} onChange={(e) => setApellidos(e.target.value)} /></div>
-              <div className="input"><input type="text" placeholder="Documento" value={ndocumento} onChange={(e) => setNdocumento(e.target.value)} /></div>
-              <div className="input"><input type="email" placeholder="Correo" value={correo} onChange={(e) => setCorreo(e.target.value)} /></div>
-              <div className="input"><input type="tel" placeholder="Teléfono" value={telefono} onChange={(e) => setTelefono(e.target.value)} /></div>
-              <div className="input"><input type="password" placeholder="Contraseña" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} /></div>
-            </>
-          ) : (
-            <>
-              <div className="input"><input type="email" placeholder="Correo" value={user} onChange={(e) => setUser(e.target.value)} /></div>
-              <div className="input"><input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-              <div className="forgot-password" onClick={() => navigate('/olvide_password')}>¿Olvidaste tu contraseña?</div>
-            </>
-          )}
-        </div>
-
-        <div className="submit-container">
-          <div className="submit" onClick={handleSubmit}>
-            {isLogin ? 'Ingresar' : 'Registrar'}
+      <div className="right-panel">
+        <div className="container">
+          <div className="header">
+            <div className="text">{isLogin ? 'Ingresar' : 'Registrarse'}</div>
+            <div className="underline"></div>
           </div>
-          <div className="toggle-mode" onClick={handleModeSwitch}>
-            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
-          </div>
-        </div>
 
-        {message && <div className="message">{message}</div>}
+          <div className="inputs">
+            {!isLogin ? (
+              <>
+                <div className="input"><input type="text" placeholder="Usuario" value={nusuario} onChange={(e) => setNusuario(e.target.value)} /></div>
+                <div className="input"><input type="text" placeholder="Nombres" value={nombres} onChange={(e) => setNombres(e.target.value)} /></div>
+                <div className="input"><input type="text" placeholder="Apellidos" value={apellidos} onChange={(e) => setApellidos(e.target.value)} /></div>
+                <div className="input">
+                  <input
+                    type="text"
+                    placeholder="Documento"
+                    value={ndocumento}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (/^\d*$/.test(val)) setNdocumento(val); // Solo números positivos
+                    }}
+                  />
+                </div>
+                <div className="input"><input type="email" placeholder="Correo" value={correo} onChange={(e) => setCorreo(e.target.value)} /></div>
+                <div className="input">
+                  <input
+                    type="tel"
+                    placeholder="Teléfono"
+                    value={telefono}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (/^\d*$/.test(val)) setTelefono(val); // Solo números
+                    }}
+                  />
+                </div>
+                <div className="input"><input type="password" placeholder="Contraseña" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} /></div>
+              </>
+            ) : (
+              <>
+                <div className="input"><input type="email" placeholder="Correo" value={user} onChange={(e) => setUser(e.target.value)} /></div>
+                <div className="input"><input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+                <div className="forgot-password" onClick={() => navigate('/olvide_password')}>¿Olvidaste tu contraseña?</div>
+              </>
+            )}
+          </div>
+
+          <div className="submit-container">
+            <div className="submit" onClick={handleSubmit}>
+              {isLogin ? 'Ingresar' : 'Registrar'}
+            </div>
+            <div className="toggle-mode" onClick={handleModeSwitch}>
+              {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
+            </div>
+          </div>
+
+          {message && <div className="message">{message}</div>}
+        </div>
       </div>
     </div>
-  </div>
-);
-
-
+  );
 };
 
 export default LoginSignup;
