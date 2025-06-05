@@ -278,12 +278,35 @@ const CreditRiskDashboard = () => {
                       )}
                     <div className="ml-metrics">
                       <div>
-                        <label><strong>Porcentaje de Aprovado: </strong></label>
+                        <label><strong>Porcentaje de Aprobado: </strong></label>
                         <span>{item.porcentAprobado != null?item.porcentAprobado:''}%</span>
                       </div>
                       <div>
                         <label><strong>Porcentaje de Rechazo: </strong> </label>
                         <span>{item.porcentRechazo != null?item.porcentRechazo:''}%</span>
+                      </div>
+                      <div>
+                        {item.porcentRechazo != null && (
+                          <>
+                          <label><strong>Nivel de Riesgo: </strong> </label>
+                          {item.porcentRechazo <= 30 ? (
+                            <span style={{display:'inline-flex',alignItems:'center',gap:'8px'}}>
+                              <span className="nivel-bajo">BAJO</span>
+                              <span style={{width:'32px',height:'18px',background:'#27ae60',borderRadius:'4px',display:'inline-block',border:'1px solid #ccc'}}></span>
+                            </span>
+                          ) : item.porcentRechazo <= 70 ? (
+                            <span style={{display:'inline-flex',alignItems:'center',gap:'8px'}}>
+                              <span className="nivel-medio">MEDIO</span>
+                              <span style={{width:'32px',height:'18px',background:'#f39c12',borderRadius:'4px',display:'inline-block',border:'1px solid #ccc'}}></span>
+                            </span>
+                          ) : (
+                            <span style={{display:'inline-flex',alignItems:'center',gap:'8px'}}>
+                              <span className="nivel-alto">ALTO</span>
+                              <span style={{width:'32px',height:'18px',background:'#e40000',borderRadius:'4px',display:'inline-block',border:'1px solid #ccc'}}></span>
+                            </span>
+                          )}
+                          </>
+                        )}
                       </div>
                       <div style={{display: 'inline-block', width:'100%'}}>
                         <label><strong>Respuesta del Modelo: </strong> </label>
